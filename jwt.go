@@ -44,7 +44,7 @@ func New(ctx context.Context, next http.Handler, config *Config, name string) (h
 		config.AuthHeader = "Authorization"
 	}
 	if len(config.HeaderPrefix) == 0 {
-		config.HeaderPrefix = "Bearer"
+		config.HeaderPrefix = ""
 	}
 
 	return &JWT{
