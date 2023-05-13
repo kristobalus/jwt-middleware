@@ -18,7 +18,6 @@ type Config struct {
 	HeaderPrefix string `json:"headerPrefix,omitempty"`
 }
 
-
 func CreateConfig() *Config {
 	return &Config{}
 }
@@ -64,13 +63,13 @@ func (j *JWT) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Request error", http.StatusUnauthorized)
 		return
 	}
-	
+
 	token, preprocessError  := preprocessJWT(headerToken, j.headerPrefix)
 	if preprocessError != nil {
 		http.Error(res, "Request error", http.StatusBadRequest)
 		return
 	}
-	
+
 	verified, verificationError := verifyJWT(token, j.secret)
 	if verificationError != nil {
 		http.Error(res, "Not allowed", http.StatusUnauthorized)
@@ -86,7 +85,7 @@ func (j *JWT) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		}
 
 		// TODO Check for outside of ASCII range characters
-		
+
 		// Inject header as proxypayload or configured name
 		req.Header.Add(j.proxyHeaderName, payload)
 		fmt.Println(req.Header)
@@ -109,7 +108,7 @@ func verifyJWT(token Token, secret string) (bool, error) {
 	message := token.header + "." + token.payload
 	mac.Write([]byte(message))
 	expectedMAC := mac.Sum(nil)
-	
+
 	decodedVerification, errDecode := base64.RawURLEncoding.DecodeString(token.verification)
 	if errDecode != nil {
 		return false, errDecode
